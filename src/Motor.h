@@ -11,7 +11,7 @@
 #define motorL1 A1
 #define motorL2 A0
 
-const int error = 5;
+const int error = 4;
 
 // Stop motor
 void restMotor(){
@@ -37,6 +37,16 @@ void goForwardMotor(int speed){
 void goRightMotor(int speed){
     digitalWrite(motorL1,LOW);
     digitalWrite(motorL2,HIGH);
+    digitalWrite(motorR1,LOW);
+    digitalWrite(motorR2,LOW);
+    analogWrite(motorLSpeed,speed);
+    analogWrite(motorRSpeed,0);
+}
+
+// Motor moving rightwards hard
+void goHardRightMotor(int speed){
+    digitalWrite(motorL1,LOW);
+    digitalWrite(motorL2,HIGH);
     digitalWrite(motorR1,HIGH);
     digitalWrite(motorR2,LOW);
     analogWrite(motorLSpeed,speed);
@@ -45,6 +55,16 @@ void goRightMotor(int speed){
 
 // Motor moving leftwards
 void goLeftMotor(int speed){
+    digitalWrite(motorL1,LOW);
+    digitalWrite(motorL2,LOW);
+    digitalWrite(motorR1,LOW);
+    digitalWrite(motorR2,HIGH);
+    analogWrite(motorLSpeed,0);
+    analogWrite(motorRSpeed,speed);
+}
+
+// Motor moving leftwards hard
+void goHardLeftMotor(int speed){
     digitalWrite(motorL1,HIGH);
     digitalWrite(motorL2,LOW);
     digitalWrite(motorR1,LOW);
@@ -61,5 +81,17 @@ void motorSetup(){
     pinMode(motorL2, OUTPUT);
     pinMode(motorR1, OUTPUT);
     pinMode(motorR2, OUTPUT);
+    restMotor();
+}
+
+void slightRight(){
+    goRightMotor(110);
+    delay(60);
+    restMotor();
+}
+
+void slightLeft(){
+    goLeftMotor(110);
+    delay(60);
     restMotor();
 }

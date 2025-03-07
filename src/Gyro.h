@@ -11,7 +11,6 @@ const int MPU = 0x68; // MPU6050 I2C address
 // SCL -> A5 
 // SDA -> A4 
 
-
 const float GYRO_SCALE = 1.0 / 131.0;
 float gyroOutputBuffer = 0;
 
@@ -80,6 +79,13 @@ float update(){
     yaw += gyroOutputBuffer * elapsedTime;
     angle = round(yaw*10)/10.0; //if you mounted MPU6050 in a different orientation to me, angle may not = roll. It can roll, pitch, yaw or minus version of the three
     //for me, turning right reduces angle. Turning left increases angle.
+    if (angle>180){
+        angle = angle - abs(int(angle/180)) * 360 + abs(int(angle/360)) * 360;
+    }
+    else if (angle < -180){
+        angle = angle + abs(int(angle/180)) * 360 - abs(int(angle/360)) * 360;
+    }
+    angle +=180;
     return(angle);
 }
 

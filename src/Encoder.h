@@ -34,7 +34,7 @@ void encoderSetup(){
 // however actual circumference should be 2*PI*R instead of PI*R
 const float wheelCircumference = 0.05 * 2 * PI * 0.0325 * 100;
 
-float getMovingDistanceL(){
+float getMovingDistanceLeft(){
     noInterrupts();
 
     // TIPS: ((pulsesLeft + pulsesRight) / 2) * wheelCircumference seems ok to use it
@@ -46,7 +46,7 @@ float getMovingDistanceL(){
     return distance;
 }
 
-float getMovingDistanceR(){
+float getMovingDistanceRight(){
     noInterrupts();
 
     // TIPS: ((pulsesLeft + pulsesRight) / 2) * wheelCircumference seems ok to use it
@@ -56,6 +56,10 @@ float getMovingDistanceR(){
     interrupts();
 
     return distance;
+}
+
+float getMovingDistance(){
+    return((getMovingDistanceLeft()+getMovingDistanceRight())/2);
 }
 
 void resetDistance(){
