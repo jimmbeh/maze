@@ -12,12 +12,27 @@ void goStraight(float targetDistance){
   while ((getMovingDistance()-initialDistance)<targetDistance) {
     float movedLeft = getMovingDistanceLeft() - initialLeftDistance;
     float movedRight = getMovingDistanceRight() - initialRightDistance;
-    if ((movedLeft-movedRight)>1) {
+    if ((movedLeft-movedRight)>0.5) {
       slightLeft();
-    } else if ((movedRight-movedLeft)>1) {
+    } else if ((movedRight-movedLeft)>0.5) {
       slightRight();
     } else {
-        goForwardMotor(110);
+        goForwardMotor(120);
+    }
+  }
+  restMotor();
+}
+
+void goStraightGyro(float targetDistance){
+  mpuSetup();
+  float initialDistance = getMovingDistance();
+  while ((getMovingDistance()-initialDistance)<targetDistance) {
+    if (update()<179.9) {
+      slightLeft();
+    } else if (update()>180.1) {
+      slightRight();
+    } else {
+        goForwardMotor(120);
     }
   }
   restMotor();
@@ -56,9 +71,9 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  // float fx = getDistanceFront();
-  // float rx = getDistanceRight();
-  // float lx = getDistanceLeft();
+  float fx = getDistanceFront();
+  float rx = getDistanceRight();
+  float lx = getDistanceLeft();
   // Serial.println(String(fx)); Serial.println(String(rx)); Serial.println(String(lx));
   // if (lx<6 || (rx<25&&rx>7)) {
   //   slightRight();
@@ -74,5 +89,5 @@ void loop() {
   // } else {
   //   goStraight(8);
   // }
-  update();
+  goStraightGyro(400); delay(10000); 
 }

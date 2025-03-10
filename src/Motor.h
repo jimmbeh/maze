@@ -85,13 +85,13 @@ void motorSetup(){
 }
 
 void slightRight(){
-    goRightMotor(130);
-    delay(10);
+    goRightMotor(120);
+    delay(8);
     restMotor();
 }
 
 void slightLeft(){
-    goLeftMotor(130);
-    delay(10);
+    goLeftMotor(120);
+    delay(8);
     restMotor();
 }
