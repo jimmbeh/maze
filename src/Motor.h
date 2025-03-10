@@ -2,14 +2,14 @@
 #include <Arduino.h>
 
 // Speed control pins
-#define motorLSpeed 9
-#define motorRSpeed 10
+#define motorRSpeed 9
+#define motorLSpeed 10
 
 // Direction control pins
-#define motorR1 A3
-#define motorR2 A2
-#define motorL1 A1
-#define motorL2 A0
+#define motorL2 A3
+#define motorL1 A2
+#define motorR2 A1
+#define motorR1 A0
 
 const int error = 4;
 
@@ -85,13 +85,13 @@ void motorSetup(){
 }
 
 void slightRight(){
-    goRightMotor(110);
-    delay(60);
+    goRightMotor(130);
+    delay(10);
     restMotor();
 }
 
 void slightLeft(){
-    goLeftMotor(110);
-    delay(60);
+    goLeftMotor(130);
+    delay(10);
     restMotor();
 }

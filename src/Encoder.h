@@ -1,8 +1,8 @@
 // Include Arduino standard library to access standard functions
 #include <Arduino.h>
 
-#define encoderPinL 2
-#define encoderPinR 3
+#define encoderPinR 2
+#define encoderPinL 3
 
 volatile unsigned long pulsesL = 0;
 volatile unsigned long pulsesR = 0;

@@ -5,13 +5,13 @@
 #define frontTrig 12
 #define frontEcho 13
 
-// Right ultrasonic sensor
-#define rightTrig 8
-#define rightEcho 11
-
 // Left ultrasonic sensor
-#define leftTrig 7
-#define leftEcho 6
+#define leftTrig 8
+#define leftEcho 11
+
+// Right ultrasonic sensor
+#define rightTrig 7
+#define rightEcho 6
 
 // Ultrasonic part setup code
 void ultrasonicSetup(){

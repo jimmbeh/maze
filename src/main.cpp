@@ -28,7 +28,7 @@ void turnRight(){
   if (targetAngle<0){
       targetAngle += 360;
   }
-  while (abs(update()-targetAngle)>20){
+  while (abs(update()-targetAngle)>25){
       goHardRightMotor(120);
   }
   restMotor();
@@ -39,7 +39,7 @@ void turnLeft(){
   if (targetAngle>360){
       targetAngle -= 360;
   }
-  while (abs(update()-targetAngle)>20){
+  while (abs(update()-targetAngle)>25){
       goHardLeftMotor(120);
   }
   restMotor();
@@ -56,23 +56,23 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  float fx = getDistanceFront();
-  float rx = getDistanceRight();
-  float lx = getDistanceLeft();
-  Serial.println(String(fx)); Serial.println(String(rx)); Serial.println(String(lx));
-  if (lx<6 || (rx<25&&rx>7)) {
-    slightRight();
-  }
-  if (rx<6 || (lx<25&&lx>7)) {
-    slightLeft();
-  }
-  if (fx<5) { // if too near to front wall
-    turnRight(); delay(500);
-  } else if (lx>25) { // else if no left wall
-    goStraight(50);
-    turnLeft(); delay(500);
-  } else {
-    goStraight(8);
-  }
-
+  // float fx = getDistanceFront();
+  // float rx = getDistanceRight();
+  // float lx = getDistanceLeft();
+  // Serial.println(String(fx)); Serial.println(String(rx)); Serial.println(String(lx));
+  // if (lx<6 || (rx<25&&rx>7)) {
+  //   slightRight();
+  // }
+  // if (rx<6 || (lx<25&&lx>7)) {
+  //   slightLeft();
+  // }
+  // if (fx<5) { // if too near to front wall
+  //   turnRight(); delay(500);
+  // } else if (lx>25) { // else if no left wall
+  //   goStraight(50);
+  //   turnLeft(); delay(500);
+  // } else {
+  //   goStraight(8);
+  // }
+  update();
 }
