@@ -75,19 +75,22 @@ void loop() {
   float rx = getDistanceRight();
   float lx = getDistanceLeft();
   // Serial.println(String(fx)); Serial.println(String(rx)); Serial.println(String(lx));
-  // if (lx<6 || (rx<25&&rx>7)) {
-  //   slightRight();
-  // }
-  // if (rx<6 || (lx<25&&lx>7)) {
-  //   slightLeft();
-  // }
-  // if (fx<5) { // if too near to front wall
-  //   turnRight(); delay(500);
-  // } else if (lx>25) { // else if no left wall
-  //   goStraight(50);
-  //   turnLeft(); delay(500);
-  // } else {
-  //   goStraight(8);
-  // }
-  goStraightGyro(400); delay(10000); 
+
+  while (abs(lx-rx)>1) { // while left and right distance, difference >1
+    if (lx>rx) { // if far from left wall
+      slightLeft();
+    } else if (rx>lx) { // if far from right wall
+      slightRight();
+    }
+    lx = getDistanceLeft(); // refresh left distance
+    rx = getDistanceRight(); // refresh right distance
+  }
+
+  if (fx<5) { // if too near to front wall
+    turnRight(); delay(500);
+  } else if (lx>25) { // else if no left wall
+    turnLeft(); delay(500);
+  } else {
+    goStraightGyro(5);
+  }
 }
