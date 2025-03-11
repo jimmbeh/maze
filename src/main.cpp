@@ -5,9 +5,9 @@
 #include <Encoder.h>
 #include <Gyro.h>
 
-int const dfSpeed = 110;
-int const slSpeed = 120;
-int const htSpeed = 110;
+int const dfSpeed = 110;  // default speed
+int const slSpeed = 120;  // slight speed
+int const htSpeed = 110;  // hard turn speed
 
 void slightRight(){ // robot to tilt right, use when adjusting position slightly
   goRightMotor(slSpeed);
@@ -22,7 +22,7 @@ void slightLeft(){  // robot to tilt left, use when adjusting position slightly
 }
 
 void goStraightGyro(float targetDistance, float currentAngle){  // robot to go straight for specified distance based on gyroscope feedback
-  targetDistance = 4* targetDistance;
+  targetDistance = 3.7* targetDistance;
   float initialDistance = getMovingDistance();
   while ((getMovingDistance()-initialDistance)<targetDistance) {
     if (update()<currentAngle) {
