@@ -5,21 +5,24 @@
 #include <Encoder.h>
 #include <Gyro.h>
 
-int const dfSpeed = 120;
+int const dfSpeed = 110;
+int const slSpeed = 120;
+int const htSpeed = 110;
 
 void slightRight(){ // robot to tilt right, use when adjusting position slightly
-  goRightMotor(dfSpeed+20);
-  delay(5);
-  restMotor();
+  goRightMotor(slSpeed);
+  // delay(2);
+  // restMotor();
 }
 
 void slightLeft(){  // robot to tilt left, use when adjusting position slightly
-  goLeftMotor(dfSpeed+20);
-  delay(5);
-  restMotor();
+  goLeftMotor(slSpeed);
+  // delay(2);
+  // restMotor();
 }
 
 void goStraightGyro(float targetDistance, float currentAngle){  // robot to go straight for specified distance based on gyroscope feedback
+  targetDistance = 4* targetDistance;
   float initialDistance = getMovingDistance();
   while ((getMovingDistance()-initialDistance)<targetDistance) {
     if (update()<currentAngle) {
@@ -38,8 +41,8 @@ void turnRight(){ // turn sharp right (-90d)
   if (targetAngle<0){
       targetAngle += 360;
   }
-  while (abs(update()-targetAngle)>25){
-      goHardRightMotor(120);
+  while (abs(update()-targetAngle)>30){
+      goHardRightMotor(htSpeed);
   }
   restMotor();
 }
@@ -49,8 +52,8 @@ void turnLeft(){  // turn sharp left (+90d)
   if (targetAngle>360){
       targetAngle -= 360;
   }
-  while (abs(update()-targetAngle)>25){
-      goHardLeftMotor(120);
+  while (abs(update()-targetAngle)>30){
+      goHardLeftMotor(htSpeed);
   }
   restMotor();
 }
@@ -79,6 +82,22 @@ void testMotor() {  // test robot movement in 1s intervals, fwd, stop, left, sto
   restMotor(); delay(1000);
 }
 
+void testAdvanced() { // test advanced movement in 1s intervals, goFwd 100cm, turn right, turn left
+  goStraightGyro(25, update()); delay(1000);
+  turnRight(); delay(1000);
+  goStraightGyro(25, update()); delay(1000);
+  goStraightGyro(25, update()); delay(1000);
+  turnRight(); delay(1000);
+  goStraightGyro(25, update()); delay(1000);
+  turnLeft(); delay(1000);
+  goStraightGyro(25, update()); delay(1000);
+  turnLeft(); delay(1000);
+  goStraightGyro(25, update()); delay(1000);
+  goStraightGyro(25, update()); delay(1000);
+  goStraightGyro(25, update()); delay(1000);
+  goStraightGyro(25, update()); delay(1000);
+}
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
@@ -86,10 +105,12 @@ void setup() {
   ultrasonicSetup();
   encoderSetup();
   mpuSetup();
+
+  // testMotor();
+  testAdvanced();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  testMotor();
-  delay(10000000);
+  // testSensor();
 }
