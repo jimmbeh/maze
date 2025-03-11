@@ -5,40 +5,35 @@
 #include <Encoder.h>
 #include <Gyro.h>
 
-void goStraight(float targetDistance){
+int const dfSpeed = 120;
+
+void slightRight(){ // robot to tilt right, use when adjusting position slightly
+  goRightMotor(dfSpeed+20);
+  delay(5);
+  restMotor();
+}
+
+void slightLeft(){  // robot to tilt left, use when adjusting position slightly
+  goLeftMotor(dfSpeed+20);
+  delay(5);
+  restMotor();
+}
+
+void goStraightGyro(float targetDistance, float currentAngle){  // robot to go straight for specified distance based on gyroscope feedback
   float initialDistance = getMovingDistance();
-  float initialLeftDistance = getMovingDistanceLeft();
-  float initialRightDistance = getMovingDistanceRight();
   while ((getMovingDistance()-initialDistance)<targetDistance) {
-    float movedLeft = getMovingDistanceLeft() - initialLeftDistance;
-    float movedRight = getMovingDistanceRight() - initialRightDistance;
-    if ((movedLeft-movedRight)>0.5) {
+    if (update()<currentAngle) {
       slightLeft();
-    } else if ((movedRight-movedLeft)>0.5) {
+    } else if (update()>currentAngle) {
       slightRight();
     } else {
-        goForwardMotor(120);
+        goForwardMotor(dfSpeed);
     }
   }
   restMotor();
 }
 
-void goStraightGyro(float targetDistance){
-  mpuSetup();
-  float initialDistance = getMovingDistance();
-  while ((getMovingDistance()-initialDistance)<targetDistance) {
-    if (update()<179.9) {
-      slightLeft();
-    } else if (update()>180.1) {
-      slightRight();
-    } else {
-        goForwardMotor(120);
-    }
-  }
-  restMotor();
-}
-
-void turnRight(){
+void turnRight(){ // turn sharp right (-90d)
   float targetAngle = update() - 90;
   if (targetAngle<0){
       targetAngle += 360;
@@ -49,7 +44,7 @@ void turnRight(){
   restMotor();
 }
 
-void turnLeft(){
+void turnLeft(){  // turn sharp left (+90d)
   float targetAngle = update() + 90;
   if (targetAngle>360){
       targetAngle -= 360;
@@ -58,6 +53,30 @@ void turnLeft(){
       goHardLeftMotor(120);
   }
   restMotor();
+}
+
+void testSensor() { // test gyroscope, encoder, and ultrasonic using serial monitor
+  float fx = getDistanceFront();
+  float rx = getDistanceRight();
+  float lx = getDistanceLeft();
+  Serial.print("Front Distance: "); Serial.println(String(fx)); 
+  Serial.print("Right Distance: "); Serial.println(String(rx)); 
+  Serial.print("Left Distance: "); Serial.println(String(lx));
+  Serial.print("Yaw Angle: "); Serial.println(String(update()));
+  Serial.print("Moved Distance Left: "); Serial.println(String(getMovingDistanceLeft()));
+  Serial.print("Moved Distance Right: "); Serial.println(String(getMovingDistanceRight()));
+  Serial.print("Moved Distance Average: "); Serial.println(String(getMovingDistance()));
+}
+
+void testMotor() {  // test robot movement in 1s intervals, fwd, stop, left, stop, fwd, right, stop
+  goForwardMotor(dfSpeed); delay(1000);
+  restMotor(); delay(1000);
+  goLeftMotor(dfSpeed); delay(1000);
+  restMotor(); delay(1000);
+  goForwardMotor(dfSpeed); delay(1000);
+  restMotor(); delay(1000);
+  goRightMotor(dfSpeed); delay(1000);
+  restMotor(); delay(1000);
 }
 
 void setup() {
@@ -71,26 +90,6 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  float fx = getDistanceFront();
-  float rx = getDistanceRight();
-  float lx = getDistanceLeft();
-  // Serial.println(String(fx)); Serial.println(String(rx)); Serial.println(String(lx));
-
-  while (abs(lx-rx)>1) { // while left and right distance, difference >1
-    if (lx>rx) { // if far from left wall
-      slightLeft();
-    } else if (rx>lx) { // if far from right wall
-      slightRight();
-    }
-    lx = getDistanceLeft(); // refresh left distance
-    rx = getDistanceRight(); // refresh right distance
-  }
-
-  if (fx<5) { // if too near to front wall
-    turnRight(); delay(500);
-  } else if (lx>25) { // else if no left wall
-    turnLeft(); delay(500);
-  } else {
-    goStraightGyro(5);
-  }
+  testMotor();
+  delay(10000000);
 }

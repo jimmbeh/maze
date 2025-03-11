@@ -8,8 +8,8 @@
 // Direction control pins
 #define motorL2 A3
 #define motorL1 A2
-#define motorR2 A1
-#define motorR1 A0
+#define motorR1 A1
+#define motorR2 A0
 
 const int error = 4;
 
@@ -81,17 +81,5 @@ void motorSetup(){
     pinMode(motorL2, OUTPUT);
     pinMode(motorR1, OUTPUT);
     pinMode(motorR2, OUTPUT);
-    restMotor();
-}
-
-void slightRight(){
-    goRightMotor(120);
-    delay(5);
-    restMotor();
-}
-
-void slightLeft(){
-    goLeftMotor(120);
-    delay(5);
     restMotor();
 }
