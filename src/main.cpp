@@ -8,6 +8,19 @@
 int const dfSpeed = 110;  // default speed
 int const slSpeed = 120;  // slight speed
 int const htSpeed = 110;  // hard turn speed
+int orT = 20; // start orientation, facing front (180d)
+int const frontLm = 6;
+int const sideLm = 8;
+int const sideDt = 25;
+
+int checkORT() {
+  int currentAngle;
+  if ((orT%4)==0) {currentAngle=180;}
+  else if (((orT+1)%4)==0) {currentAngle=90;}
+  else if (((orT-1)%4)==0) {currentAngle=270;}
+  else if (((orT+2)%4)==0) {currentAngle=360;}
+  return(currentAngle);
+}
 
 void slightRight(){ // robot to tilt right, use when adjusting position slightly
   goRightMotor(slSpeed);
@@ -21,7 +34,7 @@ void slightLeft(){  // robot to tilt left, use when adjusting position slightly
   // restMotor();
 }
 
-void goStraightGyro(float targetDistance, float currentAngle){  // robot to go straight for specified distance based on gyroscope feedback
+void goStraightGyro(float targetDistance, int currentAngle){  // robot to go straight for specified distance based on gyroscope feedback
   targetDistance = 3.7* targetDistance;
   float initialDistance = getMovingDistance();
   while ((getMovingDistance()-initialDistance)<targetDistance) {
@@ -36,26 +49,49 @@ void goStraightGyro(float targetDistance, float currentAngle){  // robot to go s
   restMotor();
 }
 
-void turnRight(){ // turn sharp right (-90d)
-  float targetAngle = update() - 90;
+void goStraightUS(float targetDistance) {
+  targetDistance = 3.7* targetDistance;
+  float initialDistance = getMovingDistance();
+  float lx = getDistanceLeft();
+  float rx = getDistanceRight();
+  while ((getMovingDistance()-initialDistance)<targetDistance) {
+    lx = getDistanceLeft();
+    rx = getDistanceRight();
+    if (lx>rx) {
+      slightLeft();
+    } else if (rx>lx) {
+      slightRight();
+    } else {
+        goForwardMotor(dfSpeed);
+    }
+  }
+  restMotor();
+}
+
+void turnRight(int currentAngle){ // turn sharp right (-90d)
+  float targetAngle = currentAngle - 90;
   if (targetAngle<0){
       targetAngle += 360;
   }
   while (abs(update()-targetAngle)>30){
       goHardRightMotor(htSpeed);
   }
+  orT -= 1;
   restMotor();
+  // delay(1000);
 }
 
-void turnLeft(){  // turn sharp left (+90d)
-  float targetAngle = update() + 90;
+void turnLeft(int currentAngle){  // turn sharp left (+90d)
+  float targetAngle = currentAngle + 90;
   if (targetAngle>360){
       targetAngle -= 360;
   }
   while (abs(update()-targetAngle)>30){
       goHardLeftMotor(htSpeed);
   }
-  restMotor();
+  orT += 1;
+  restMotor(); 
+  // delay(1000);
 }
 
 void testSensor() { // test gyroscope, encoder, and ultrasonic using serial monitor
@@ -83,19 +119,52 @@ void testMotor() {  // test robot movement in 1s intervals, fwd, stop, left, sto
 }
 
 void testAdvanced() { // test advanced movement in 1s intervals, goFwd 100cm, turn right, turn left
-  goStraightGyro(25, update()); delay(1000);
-  turnRight(); delay(1000);
-  goStraightGyro(25, update()); delay(1000);
-  goStraightGyro(25, update()); delay(1000);
-  turnRight(); delay(1000);
-  goStraightGyro(25, update()); delay(1000);
-  turnLeft(); delay(1000);
-  goStraightGyro(25, update()); delay(1000);
-  turnLeft(); delay(1000);
-  goStraightGyro(25, update()); delay(1000);
-  goStraightGyro(25, update()); delay(1000);
-  goStraightGyro(25, update()); delay(1000);
-  goStraightGyro(25, update()); delay(1000);
+  goStraightGyro(25, checkORT()); 
+  // delay(1000);
+  turnRight(checkORT()); 
+  // delay(1000);
+  goStraightGyro(25, checkORT()); 
+  // delay(1000);
+  goStraightGyro(25, checkORT()); 
+  // delay(1000);
+  turnRight(checkORT()); 
+  // delay(1000);
+  goStraightGyro(25, checkORT()); 
+  // delay(1000);
+  turnLeft(checkORT()); 
+  // delay(1000);
+  goStraightGyro(25, checkORT()); 
+  // delay(1000);
+  turnLeft(checkORT()); delay(1000);
+  goStraightGyro(25, checkORT()); 
+  // delay(1000);
+  goStraightGyro(25, checkORT()); 
+  // delay(1000);
+  goStraightGyro(25, checkORT()); 
+  // delay(1000);
+  goStraightGyro(25, checkORT()); 
+  // delay(1000);
+}
+
+void followLeftWall() {
+  float fx = getDistanceFront();
+  float lx = getDistanceLeft();
+  float rx = getDistanceRight();
+  if (fx<frontLm) {
+    fx = getDistanceFront();
+    if (fx<frontLm) {
+      turnRight(checkORT());
+    }
+  } else if (lx>sideDt) {
+    lx = getDistanceLeft();
+    if (lx>sideDt) {
+      turnLeft(checkORT());
+    }
+  } else if (lx<sideDt && rx<sideDt) {
+    goStraightUS(1);
+  } else {
+    goStraightGyro(1, checkORT());
+  }
 }
 
 void setup() {
@@ -113,4 +182,6 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   // testSensor();
+
+  // followLeftWall();
 }

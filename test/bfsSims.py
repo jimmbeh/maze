@@ -147,8 +147,19 @@ def animate_solution(maze, explored, path):
 
     plt.show()
 
-start = generate_start(size)
-real_maze = generate_maze(size,start[0],start[1])
+# start = generate_start(size)
+# real_maze = generate_maze(size,start[0],start[1])
+start = (8,1)
+real_maze = np.array([[1,1,1,1,1,1,1,0,1],
+                     [1,0,1,0,0,0,0,0,1],
+                     [1,0,1,0,1,0,1,0,1],
+                     [1,0,1,0,1,0,1,0,1],
+                     [1,0,1,1,1,1,1,0,1],
+                     [1,0,0,0,0,0,1,0,1],
+                     [1,0,1,1,1,0,1,0,1],
+                     [1,0,1,0,0,0,0,0,1],
+                     [1,0,1,1,1,1,1,1,1]])
+
 
 # Run BFS and animate the exploration and solution
 explored, path = bfs_explore(start, real_maze)
