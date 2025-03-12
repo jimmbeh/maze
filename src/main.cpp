@@ -5,9 +5,9 @@
 #include <Encoder.h>
 #include <Gyro.h>
 
-int const dfSpeed = 110;  // default speed
-int const slSpeed = 120;  // slight speed
-int const htSpeed = 110;  // hard turn speed
+int const dfSpeed = 100;  // default speed
+int const slSpeed = dfSpeed+20;  // slight speed
+int const htSpeed = dfSpeed;  // hard turn speed
 int orT = 20; // start orientation, facing front (180d)
 int const frontLm = 6;
 int const sideLm = 8;
@@ -18,7 +18,7 @@ int checkORT() {
   if ((orT%4)==0) {currentAngle=180;}
   else if (((orT+1)%4)==0) {currentAngle=90;}
   else if (((orT-1)%4)==0) {currentAngle=270;}
-  else if (((orT+2)%4)==0) {currentAngle=360;}
+  else if (((orT+2)%4)==0) {currentAngle=0;}
   return(currentAngle);
 }
 
@@ -38,7 +38,13 @@ void goStraightGyro(float targetDistance, int currentAngle){  // robot to go str
   targetDistance = 3.7* targetDistance;
   float initialDistance = getMovingDistance();
   while ((getMovingDistance()-initialDistance)<targetDistance) {
-    if (update()<currentAngle) {
+    if (currentAngle==0) {
+      if (update()<180) {
+        slightRight();
+      } else {
+        slightLeft();
+      }
+    } else if (update()<currentAngle) {
       slightLeft();
     } else if (update()>currentAngle) {
       slightRight();
@@ -118,7 +124,7 @@ void testMotor() {  // test robot movement in 1s intervals, fwd, stop, left, sto
   restMotor(); delay(1000);
 }
 
-void testAdvanced() { // test advanced movement in 1s intervals, goFwd 100cm, turn right, turn left
+void testAdvanced() { // test advanced movement in 1s intervals, f,r,f,f,r,f,l,f,l,f,f,f,f
   goStraightGyro(25, checkORT()); 
   // delay(1000);
   turnRight(checkORT()); 
@@ -135,7 +141,8 @@ void testAdvanced() { // test advanced movement in 1s intervals, goFwd 100cm, tu
   // delay(1000);
   goStraightGyro(25, checkORT()); 
   // delay(1000);
-  turnLeft(checkORT()); delay(1000);
+  turnLeft(checkORT());
+  //delay(1000);
   goStraightGyro(25, checkORT()); 
   // delay(1000);
   goStraightGyro(25, checkORT()); 
@@ -161,9 +168,9 @@ void followLeftWall() {
       turnLeft(checkORT());
     }
   } else if (lx<sideDt && rx<sideDt) {
-    goStraightUS(1);
+    goStraightUS(25);
   } else {
-    goStraightGyro(1, checkORT());
+    goStraightGyro(25, checkORT());
   }
 }
 
@@ -184,4 +191,5 @@ void loop() {
   // testSensor();
 
   // followLeftWall();
+
 }
